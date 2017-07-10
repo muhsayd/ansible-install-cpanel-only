@@ -1,0 +1,5 @@
+---
+- name: Setting hostname
+  hostname:
+    name: srv1.{{ servername }}.com
+  tags: cpanel

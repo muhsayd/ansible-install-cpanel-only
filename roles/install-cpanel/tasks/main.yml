@@ -1,0 +1,49 @@
+---
+- name: Check whether cPanel is installed
+  command: grep -q "Congratulations! Your installation of cPanel & WHM" /var/log/cpanel-install.log
+  register: cpanel_check
+  check_mode: yes
+  failed_when: false
+  changed_when: false
+  tags: cpanel
+
+- name: Register cpanel_installed variable
+  set_fact:
+    cpanel_installed: true
+  when: cpanel_check.rc == 0
+  tags: cpanel
+
+- name: Change hostname
+  include: hostname.yml
+  when: cpanel_installed is not defined
+
+- name: Disable SELinux
+  include: selinux.yml
+  when: cpanel_installed is not defined
+
+- name: Install cpanel
+  include: cpanel.yml
+  when: cpanel_installed is not defined
+
+- name: fail the play if the previous command did not succeed
+  fail:
+    msg: "cPanel is not installed, or the install failed.  Play aborting!"
+  when: cpanel_install_completed is not defined
+
+- name: Get installed version of cPanel
+  shell: "/usr/local/cpanel/cpanel -V"
+  changed_when: false
+  check_mode: yes
+  register: cpanel_version_raw
+  tags: always
+
+- name: Create cpanel_version variable.
+  set_fact:
+    cpanel_version: "{{ cpanel_version_raw.stdout.split()[0] }}"
+  tags: always
+
+- name: Create cpanel_build_version variable.
+  set_fact:
+    cpanel_build_version: "{{ cpanel_version_raw.stdout.split()[2].strip(')') }}"
+  tags: always
+

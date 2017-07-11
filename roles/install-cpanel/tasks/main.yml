@@ -33,7 +33,7 @@
 - name: Get installed version of cPanel
   shell: "/usr/local/cpanel/cpanel -V"
   changed_when: false
-  check_mode: yes
+  check_mode: no 
   register: cpanel_version_raw
   tags: always
 

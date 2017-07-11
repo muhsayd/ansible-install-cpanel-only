@@ -1,8 +1,8 @@
 ---
 - name: Check whether cPanel is installed
-  command: grep -q "Congratulations! Your installation of cPanel & WHM" /var/log/cpanel-install.log
+  command: grep -q "Congratulations! Your installation of cPanel & WHM" /var/log/cpanel-install.log &> /dev/null; echo $?
   register: cpanel_check
-  check_mode: yes
+  check_mode: no
   failed_when: false
   changed_when: false
   tags: cpanel

@@ -8,4 +8,5 @@
 - name: Disabling SELinux
   selinux:
     state: disabled
+  ignore_errors: yes
   tags: cpanel

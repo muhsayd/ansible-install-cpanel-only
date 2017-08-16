@@ -13,7 +13,7 @@
   args:
     chdir: /home
 #   creates: /root/installer.lock
-  async: 5400 #wait up-to 90 minutes
+  async: 5400 # wait up-to 90 minutes
   poll: 10 # checks in 10sec 
 # shell: nohup /bin/bash /home/latest &
   register: cpanel_install_completed

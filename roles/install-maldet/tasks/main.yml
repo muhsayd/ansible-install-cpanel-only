@@ -1,0 +1,30 @@
+---
+- name: Extract maldet archive
+  unarchive:
+    src: "https://www.rfxn.com/downloads/maldetect-current.tar.gz"
+    creates: /usr/local/src/maldetect-current.tar.gz
+    dest: /usr/local/src/
+    remote_src: yes
+    validate_certs: no
+
+- name: Run the maldet installer
+  shell: "(./install.sh > /dev/null 2>&1 &)"
+  async: 10
+  poll: 0
+  args:
+    chdir: "/usr/local/src/maldetect-{{ ver }}"
+
+- name: Copy over conf.maldet template
+  template: 
+    src: conf.maldet.j2 
+    dest: /usr/local/maldetect/conf.maldet 
+    owner: root 
+    group: root 
+    mode: 0644
+    backup: yes
+  tags: conf.maldet
+
+- name: Remove folder 
+  file: 
+    path: "/usr/local/src/maldetect-{{ ver }}" 
+    state: absent

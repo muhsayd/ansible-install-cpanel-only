@@ -1,0 +1,6 @@
+---
+csf_email_to: "email@to.me"
+
+csf_allow:
+  - 10.0.15.10
+  - 10.0.2.15 

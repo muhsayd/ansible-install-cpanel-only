@@ -1,0 +1,52 @@
+---
+- name: Download csf
+  get_url: 
+    url: https://download.configserver.com/csf.tgz 
+    dest: /usr/local/src/csf.tgz
+  register: csf_downloaded
+  when: csf_installed == false
+  tags: configserver_csf
+
+- name: Extract csf
+  unarchive: 
+    src: /usr/local/src/csf.tgz 
+    dest: /usr/local/src 
+    copy: no
+  register: csf_unarchived
+  when: csf_downloaded|changed and csf_installed == false
+  tags: configserver_csf
+
+- name: Install csf
+  shell: /usr/local/src/csf/install.sh 
+  args:
+    chdir: /usr/local/src/csf/
+  when: csf_unarchived|changed and csf_installed == false
+  register: csf_install_completed
+  tags: configserver_csf
+
+- name: Remove archive
+  file: 
+    path: /usr/local/src/csf.tgz 
+    state: absent
+
+- name: Remove folder 
+  file: 
+    path: /usr/local/src/csf/ 
+    state: absent
+
+- name: Update csf.{conf,allow,ignore}
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/csf/{{ item }}"
+    owner: root
+    group: root
+    mode: 0600
+    backup: yes
+  with_items:
+    - "csf.conf"
+    - "csf.allow"
+    - "csf.ignore"
+  notify:
+    - restart csf
+    - restart lfd
+  tags: install-csf

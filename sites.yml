@@ -6,4 +6,6 @@
   connection: ssh
   gather_facts: yes
   roles:
-     - install-cpanel
+    - install-cpanel
+    - install-csf
+    - install-maldet

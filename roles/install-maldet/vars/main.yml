@@ -1,0 +1,6 @@
+---
+ver: "1.6.2"
+email_alert: "1"
+email_addr: "email@to.me"
+quarantine_hits: "1"
+quarantine_clean: "0"
